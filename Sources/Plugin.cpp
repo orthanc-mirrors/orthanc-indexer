@@ -30,6 +30,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/thread.hpp>
+#include <stack>
 
 
 static std::list<std::string>        folders_;
