@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include <OrthancFramework.h>  // To have ORTHANC_ENABLE_SQLITE defined
 #include <SQLite/Connection.h>
 
 #include <boost/noncopyable.hpp>
