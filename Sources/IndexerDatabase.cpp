@@ -234,7 +234,7 @@ void IndexerDatabase::Apply(IFileVisitor& visitor)
 }
 
 
-void IndexerDatabase::AddAttachment(const std::string& uuid,
+bool IndexerDatabase::AddAttachment(const std::string& uuid,
                                     const std::string& instanceId)
 {
   boost::mutex::scoped_lock lock(mutex_);
@@ -250,7 +250,7 @@ void IndexerDatabase::AddAttachment(const std::string& uuid,
     if (!statement.Step() ||
         statement.ColumnInt64(0) == 0)
     {
-      throw Orthanc::OrthancException(Orthanc::ErrorCode_InexistentItem);
+      return false;
     }
   }
 
@@ -263,6 +263,7 @@ void IndexerDatabase::AddAttachment(const std::string& uuid,
   }
   
   transaction.Commit();
+  return true;
 }
 
 

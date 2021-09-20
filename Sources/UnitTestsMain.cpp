@@ -248,8 +248,8 @@ TEST(IndexerDatabase, RemoveUsingRestApi)
   
   // Secondly, the storage area plugin parses DICOM attachments in
   // order to extract their Orthanc ID, and indexes them in the DB
-  db.AddAttachment("uuid1", "instance1");
-  ASSERT_THROW(db.AddAttachment("uuid2", "instance2"), Orthanc::OrthancException);
+  ASSERT_TRUE(db.AddAttachment("uuid1", "instance1"));
+  ASSERT_FALSE(db.AddAttachment("uuid2", "instance2"));
 
   ASSERT_TRUE(db.LookupAttachment(path, "uuid1"));
   ASSERT_EQ("sample.dcm", path);
@@ -311,7 +311,8 @@ TEST(IndexerDatabase, RemoveFromFilesystem)
 
   // Secondly, the storage area plugin parses DICOM attachments in
   // order to extract their Orthanc ID, and indexes them in the DB
-  db.AddAttachment("uuid1", "instance1");
+  ASSERT_TRUE(db.AddAttachment("uuid1", "instance1"));
+  ASSERT_THROW(db.AddAttachment("uuid1", "instance1"), Orthanc::OrthancException);  // Constraint violation
 
   ASSERT_TRUE(db.LookupAttachment(path, "uuid1"));
   ASSERT_TRUE(path == "copy1.dcm" || path == "copy2.dcm");

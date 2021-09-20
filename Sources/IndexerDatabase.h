@@ -87,7 +87,10 @@ public:
   // shouldn't do lengthy operations
   void Apply(IFileVisitor& visitor);
 
-  void AddAttachment(const std::string& uuid,
+  // Returns "false" iff. this instance has not been previously
+  // registerded using "AddDicomInstance()", which indicates the
+  // import of an external DICOM file
+  bool AddAttachment(const std::string& uuid,
                      const std::string& instanceId);
 
   bool LookupAttachment(std::string& path,
