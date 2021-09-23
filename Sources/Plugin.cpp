@@ -461,7 +461,7 @@ extern "C"
       return -1;
     }
 
-    OrthancPluginSetDescription(context, "Index directories out of Orthanc.");
+    OrthancPluginSetDescription(context, "Synchronize Orthanc with directories containing DICOM files.");
 
     OrthancPlugins::OrthancConfiguration configuration;
 
