@@ -36,7 +36,7 @@
 static std::list<std::string>        folders_;
 static IndexerDatabase               database_;
 static std::unique_ptr<StorageArea>  storageArea_;
-
+static unsigned int                  intervalSeconds_;
 
 
 static bool ComputeInstanceId(std::string& instanceId,
@@ -183,7 +183,7 @@ static void LookupDeletedFiles()
 }
 
 
-static void MonitorDirectories(bool* stop)
+static void MonitorDirectories(bool* stop, unsigned int intervalSeconds)
 {
   for (;;)
   {
@@ -265,7 +265,7 @@ static void MonitorDirectories(bool* stop)
       LOG(ERROR) << e.What();
     }
     
-    for (unsigned int i = 0; i < /*100*/10; i++)
+    for (unsigned int i = 0; i < intervalSeconds * 10; i++)
     {
       if (*stop)
       {
@@ -424,7 +424,7 @@ static OrthancPluginErrorCode OnChangeCallback(OrthancPluginChangeType changeTyp
   {
     case OrthancPluginChangeType_OrthancStarted:
       stop_ = false;
-      thread_ = boost::thread(MonitorDirectories, &stop_);
+      thread_ = boost::thread(MonitorDirectories, &stop_, intervalSeconds_);
       break;
 
     case OrthancPluginChangeType_OrthancStopped:
@@ -478,7 +478,10 @@ extern "C"
         static const char* const INDEX_DIRECTORY = "IndexDirectory";
         static const char* const ORTHANC_STORAGE = "OrthancStorage";
         static const char* const STORAGE_DIRECTORY = "StorageDirectory";
+        static const char* const INTERVAL = "Interval";
 
+        intervalSeconds_ = indexer.GetUnsignedIntegerValue(INTERVAL, 10 /* 10 seconds by default */);
+        
         if (!indexer.LookupListOfStrings(folders_, FOLDERS, true) ||
             folders_.empty())
         {
