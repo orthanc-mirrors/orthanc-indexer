@@ -495,6 +495,7 @@ extern "C"
             folder = configuration.GetStringValue(STORAGE_DIRECTORY, ORTHANC_STORAGE);
           }
 
+          Orthanc::SystemToolbox::MakeDirectory(folder);
           path = (boost::filesystem::path(folder) / "indexer.db").string();
         }
         
