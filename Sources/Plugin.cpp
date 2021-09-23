@@ -473,8 +473,11 @@ extern "C"
     {
       try
       {
-        static const char* const FOLDERS = "Folders";
         static const char* const DATABASE = "Database";
+        static const char* const FOLDERS = "Folders";
+        static const char* const INDEX_DIRECTORY = "IndexDirectory";
+        static const char* const ORTHANC_STORAGE = "OrthancStorage";
+        static const char* const STORAGE_DIRECTORY = "StorageDirectory";
 
         if (!indexer.LookupListOfStrings(folders_, FOLDERS, true) ||
             folders_.empty())
@@ -483,11 +486,22 @@ extern "C"
                                           "Missing configuration option for Indexer plugin: " + std::string(FOLDERS));
         }
 
-        const std::string path = indexer.GetStringValue(DATABASE, "indexer.db");
-        LOG(INFO) << "Path to the database of the Indexer plugin: " << path;
+        std::string path;
+        if (!indexer.LookupStringValue(path, DATABASE))
+        {
+          std::string folder;
+          if (!configuration.LookupStringValue(folder, INDEX_DIRECTORY))
+          {
+            folder = configuration.GetStringValue(STORAGE_DIRECTORY, ORTHANC_STORAGE);
+          }
+
+          path = (boost::filesystem::path(folder) / "indexer.db").string();
+        }
+        
+        LOG(WARNING) << "Path to the database of the Indexer plugin: " << path;
         database_.Open(path);
 
-        storageArea_.reset(new StorageArea(configuration.GetStringValue("StorageDirectory", "OrthancStorage")));
+        storageArea_.reset(new StorageArea(configuration.GetStringValue(STORAGE_DIRECTORY, ORTHANC_STORAGE)));
       }
       catch (Orthanc::OrthancException& e)
       {
