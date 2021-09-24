@@ -396,6 +396,7 @@ static OrthancPluginErrorCode StorageRemove(const char *uuid,
     }
     else
     {
+      database_.RemoveAttachment(uuid);
       storageArea_->RemoveAttachment(uuid);
     }
     
@@ -499,7 +500,7 @@ extern "C"
           }
 
           Orthanc::SystemToolbox::MakeDirectory(folder);
-          path = (boost::filesystem::path(folder) / "indexer.db").string();
+          path = (boost::filesystem::path(folder) / "indexer-plugin.db").string();
         }
         
         LOG(WARNING) << "Path to the database of the Indexer plugin: " << path;
