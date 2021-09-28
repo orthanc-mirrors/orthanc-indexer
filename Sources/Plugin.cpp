@@ -213,7 +213,8 @@ static void MonitorDirectories(bool* stop, unsigned int intervalSeconds)
       }
       catch (boost::filesystem::filesystem_error&)
       {
-        LOG(INFO) << "Indexer plugin cannot read directory: " << d.string();
+        LOG(WARNING) << "Indexer plugin cannot read directory: " << d.string();
+        continue;
       }
 
       const boost::filesystem::directory_iterator end;
@@ -488,6 +489,12 @@ extern "C"
         {
           throw Orthanc::OrthancException(Orthanc::ErrorCode_ParameterOutOfRange,
                                           "Missing configuration option for Indexer plugin: " + std::string(FOLDERS));
+        }
+
+        for (std::list<std::string>::const_iterator it = folders_.begin();
+             it != folders_.end(); ++it)
+        {
+          LOG(WARNING) << "The Indexer plugin will monitor the content of folder: " << *it;
         }
 
         std::string path;
