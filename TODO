@@ -9,3 +9,7 @@ Wishlist for the Folder indexer plugin
   from today, last three days of studies"), so orthanc could be used
   as an option a simple contingency of a main server."
 
+* From Sylvain:
+  If MaximumStorageSize is defined in Orthanc, the indexer plugin 
+  stops indexing once this limit is reached.  MaximumStorageSize should
+  be used only for Orthanc own storage, not for indexed studies.
