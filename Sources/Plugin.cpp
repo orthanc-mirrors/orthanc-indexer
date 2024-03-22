@@ -32,6 +32,8 @@
 #include <boost/thread.hpp>
 #include <stack>
 
+#define ORTHANC_PLUGIN_NAME  "indexer"
+
 
 static std::list<std::string>        folders_;
 static IndexerDatabase               database_;
@@ -463,7 +465,7 @@ extern "C"
       return -1;
     }
 
-    OrthancPluginSetDescription(context, "Synchronize Orthanc with directories containing DICOM files.");
+    OrthancPlugins::SetDescription(ORTHANC_PLUGIN_NAME, "Synchronize Orthanc with directories containing DICOM files.");
 
     OrthancPlugins::OrthancConfiguration configuration;
 
@@ -545,7 +547,7 @@ extern "C"
 
   ORTHANC_PLUGINS_API const char* OrthancPluginGetName()
   {
-    return "indexer";
+    return ORTHANC_PLUGIN_NAME;
   }
 
 
