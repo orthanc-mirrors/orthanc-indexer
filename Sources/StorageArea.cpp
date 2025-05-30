@@ -114,6 +114,11 @@ void StorageArea::Create(const std::string& uuid,
                          const void *content,
                          int64_t size)
 {
+  if (static_cast<int64_t>(static_cast<size_t>(size)) != size)
+  {
+    throw Orthanc::OrthancException(Orthanc::ErrorCode_InternalError, "Buffer larger than 4GB, which is too large for Orthanc running in 32bits");
+  }
+
   boost::filesystem::path path = GetPathInternal(root_, uuid);
 
   if (boost::filesystem::exists(path.parent_path()))
@@ -131,7 +136,7 @@ void StorageArea::Create(const std::string& uuid,
     }
   }
       
-  Orthanc::SystemToolbox::WriteFile(content, size, path.string(), false);
+  Orthanc::SystemToolbox::WriteFile(content, static_cast<size_t>(size), path.string(), false);
 }
 
 
